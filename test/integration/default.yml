@@ -1,0 +1,21 @@
+- hosts: all
+  pre_tasks:
+    # env COMPRESSION=NONE HBASE_HOME=/usr/local/hbase /usr/local/share/opentsdb/tools/create_table.sh
+    # XXX java.net.InetAddress.getLocalHost throws an exception without this
+    - shell: echo "127.0.0.1 localhost {{ ansible_hostname }}" > /etc/hosts
+      changed_when: False
+  roles:
+    - ansible-role-hadoop-namenode
+  vars:
+    hadoop_config:
+      core_site:
+        - [ name: fs.default.name, value: 'hdfs://localhost/' ]
+      hdfs_site:
+        - [ name: dfs_nameservices, value: mycluster ]
+        - [ name: dfs_ha_namenodes_mycluster, value: "{{ ansible_hostname }}" ]
+        - [ name: dfs_replication,value: 1 ]
+        - 
+          - name: dfs.namenode.name.dir
+          - value: "file://{{ hadoop_namenode_dfs_namenode_name_dir }}"
+      mapred_site:
+        - [ name: mapred_job_tracker, value: "localhost:9001" ]
