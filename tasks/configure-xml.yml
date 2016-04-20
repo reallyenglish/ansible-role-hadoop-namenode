@@ -1,0 +1,22 @@
+---
+
+- name: "Configure {{ hadoop_namenode_core_site_file }}"
+  template:
+    src: core-site.xml.j2
+    dest: "{{ hadoop_namenode_core_site_file }}"
+    validate: "xmllint %s"
+  when: hadoop_namenode_core_site_file
+
+- name: "Configure {{ hadoop_namenode_hdfs_site_file }}"
+  template:
+    src: hdfs-site.xml.j2
+    dest: "{{ hadoop_namenode_hdfs_site_file }}"
+    validate: "xmllint %s"
+  when: hadoop_namenode_hdfs_site_file
+
+- name: "Configure {{ hadoop_namenode_mapred_site_file }}"
+  template:
+    src: mapred-site.xml.j2
+    dest: "{{ hadoop_namenode_mapred_site_file }}"
+    validate: "xmllint %s"
+  when: hadoop_namenode_mapred_site_file

@@ -1,0 +1,47 @@
+--- /usr/local/etc/rc.d/hbase_master.orig   2016-04-19 16:29:11.372975000 +0000
++++ /usr/local/etc/rc.d/hbase_master    2016-04-19 16:39:37.733244000 +0000
+@@ -20,6 +20,8 @@
+ : ${hbase_master_enable:=NO}
+ : ${hbase_master_user:=hbase}
+ 
++pidfile="/var/run/hbase/hbase-hbase-master.pid"
++status_cmd="hbase_master_status"
+ command="/usr/local/hbase/bin/hbase-daemon.sh"
+ command_args='--config /usr/local/etc/hbase start master'
+ 
+@@ -29,4 +31,35 @@
+   su -m ${hbase_master_user} -c "${command} --config /usr/local/etc/hbase stop master"
+ }
+ 
++hbase_master_status()
++{
++    rc_pid=$(hbase_master_check_pidfile $pidfile)
++
++    if [ -z "$rc_pid" ]; then
++        [ -n "$rc_fast" ] && return 0
++        echo "${name} not running? (check $pidfile)."
++        return 1
++    fi  
++    echo "${name} is running as pid ${rc_pid}."
++}
++
++hbase_master_check_pidfile()
++{
++    _pidfile=$1
++    if [ -z "$_pidfile" ]; then
++        err 3 'USAGE: hbase_master_check_pidfile pidfile'
++    fi  
++    if [ ! -f $_pidfile ]; then
++        debug "pid file ($_pidfile): not readable."
++        return
++    fi  
++    read _pid _junk < $_pidfile
++    if [ -z "$_pid" ]; then
++        debug "pid file ($_pidfile): no pid in file."
++        return
++    fi  
++    if [ -n "`/usr/bin/su -m ${hbase_master_user} -c '/usr/local/bin/jps -l' | grep -e "^$_pid"`" ]; then
++        echo -n $_pid
++    fi  
++}
+ run_rc_command "$1"

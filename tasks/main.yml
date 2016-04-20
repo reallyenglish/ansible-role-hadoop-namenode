@@ -1,0 +1,53 @@
+---
+# tasks file for ansible-role-hadoop
+
+- include_vars: "{{ ansible_os_family }}.yml"
+
+- include: install-FreeBSD.yml
+  when: ansible_os_family == 'FreeBSD'
+
+- name: Create log directory
+  file:
+    path: "{{ hadoop_namenode_log_dir }}"
+    mode: 0775
+    owner: root
+    group: "{{ hadoop_namenode_group }}"
+    state: directory
+  notify: Restart namenode
+
+- name: Create db directory
+  file:
+    path: "{{ hadoop_namenode_db_dir }}"
+    mode: 0755
+    owner: "{{ hadoop_namenode_user }}"
+    group: "{{ hadoop_namenode_group }}"
+    state: directory
+  notify: Restart namenode
+
+- name: Create dfs.namenode.name.dir
+  file:
+    path: "{{ hadoop_namenode_dfs_namenode_name_dir }}"
+    mode: 0755
+    owner: "{{ hadoop_namenode_user }}"
+    group: "{{ hadoop_namenode_group }}"
+    state: directory
+  notify: Restart namenode
+
+- include: configure-xml.yml
+
+- name: Register formated or not
+  shell: "ls -1 {{ hadoop_namenode_dfs_namenode_name_dir }}"
+  register: ls_output
+  changed_when: False
+
+- command: "hadoop namenode -format"
+  become: yes
+  become_user: "{{ hadoop_namenode_user }}"
+  become_method: sudo
+  when: not ls_output.stdout_lines
+
+- name: Start hadoop namenode
+  service:
+    name: "{{ hadoop_namenode_service }}"
+    enabled: true
+    state: started
