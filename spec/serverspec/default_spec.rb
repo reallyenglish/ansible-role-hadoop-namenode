@@ -29,28 +29,32 @@ end
 describe file(core_site_xml) do
   it { should be_file }
   its(:content) { should match Regexp.escape('<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>') }
-  its(:content) { should match Regexp.escape('<name>fs.default.name</name>') }
+  its(:content) { should match Regexp.escape('<name>fs.defaultFS</name>') }
   its(:content) { should match Regexp.escape('<value>hdfs://localhost/</value>') }
+  its(:content) { should match Regexp.escape('<name>hadoop.tmp.dir</name>') }
+  its(:content) { should match Regexp.escape('<value>/var/db/hadoop</value>') }
+  its(:content) { should match Regexp.escape('<name>io.file.buffer.size</name>') }
+  its(:content) { should match Regexp.escape('<value>131072</value>') }
 end
 
 describe file(hdfs_site_xml) do
   it { should be_file }
   its(:content) { should match Regexp.escape('<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>') }
-  its(:content) { should match Regexp.escape('<name>dfs_nameservices</name>') }
-  its(:content) { should match Regexp.escape('<value>mycluster</value>') }
-  its(:content) { should match Regexp.escape('<name>dfs_ha_namenodes_mycluster</name>') }
-  its(:content) { should match /<value>default-.*<\/value>/ }
-  its(:content) { should match Regexp.escape('<name>dfs_replication</name>') }
-  its(:content) { should match Regexp.escape('<value>1</value>') }
   its(:content) { should match Regexp.escape('<name>dfs.namenode.name.dir</name>') }
-  its(:content) { should match Regexp.escape("<value>file://#{ db_dir }/dfs/name</value>") }
+  its(:content) { should match Regexp.escape('<value>${hadoop.tmp.dir}/dfs/name</value>') }
+  its(:content) { should match Regexp.escape('<name>dfs.blocksize</name>') }
+  its(:content) { should match Regexp.escape('<value>268435456</value>') }
+  its(:content) { should match Regexp.escape('<name>dfs.namenode.handler.count</name>') }
+  its(:content) { should match Regexp.escape('<value>100</value>') }
+  its(:content) { should match Regexp.escape('<name>dfs.datanode.data.dir</name>') }
+  its(:content) { should match Regexp.escape("<value>${hadoop.tmp.dir}/dfs/data</value>") }
 end
 
 describe file(mapred_site_xml) do
   it { should be_file }
   its(:content) { should match Regexp.escape('<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>') }
-  its(:content) { should match Regexp.escape('<name>mapred_job_tracker</name>') }
-  its(:content) { should match Regexp.escape('<value>localhost:9001</value>') }
+  its(:content) { should match Regexp.escape('<name>mapreduce.framework.name</name>') }
+  its(:content) { should match Regexp.escape('<value>-Xmx512M</value>') }
 end
 
 describe file(log_dir) do

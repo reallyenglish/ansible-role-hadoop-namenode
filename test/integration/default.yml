@@ -1,6 +1,5 @@
 - hosts: all
   pre_tasks:
-    # env COMPRESSION=NONE HBASE_HOME=/usr/local/hbase /usr/local/share/opentsdb/tools/create_table.sh
     # XXX java.net.InetAddress.getLocalHost throws an exception without this
     - shell: echo "127.0.0.1 localhost {{ ansible_hostname }}" > /etc/hosts
       changed_when: False
@@ -9,13 +8,42 @@
   vars:
     hadoop_config:
       core_site:
-        - [ name: fs.default.name, value: 'hdfs://localhost/' ]
-      hdfs_site:
-        - [ name: dfs_nameservices, value: mycluster ]
-        - [ name: dfs_ha_namenodes_mycluster, value: "{{ ansible_hostname }}" ]
-        - [ name: dfs_replication,value: 1 ]
         - 
+          - name: fs.defaultFS
+          - value: 'hdfs://localhost/'
+        -
+          - name: hadoop.tmp.dir
+          - value: /var/db/hadoop
+        -
+          - name: io.file.buffer.size
+          - value: 131072
+      hdfs_site:
+        -
           - name: dfs.namenode.name.dir
-          - value: "file://{{ hadoop_namenode_dfs_namenode_name_dir }}"
+          - value: "${hadoop.tmp.dir}/dfs/name"
+        - 
+          - name: dfs.blocksize
+          - value: 268435456
+        -
+          - name: dfs.namenode.handler.count 
+          - value: 100
+        -
+          - name: dfs.datanode.data.dir
+          - value: "${hadoop.tmp.dir}/dfs/data"
+      yarn-site:
+        -
+          - name: yarn.acl.enable
+          - value: false
+        -
+          - name: yarn.admin.acl
+          - value: "*"
+        -
+          - name: yarn.log-aggregation-enable
+          - value: false
       mapred_site:
-        - [ name: mapred_job_tracker, value: "localhost:9001" ]
+        -
+          - name: mapreduce.framework.name
+          - value: local
+        -
+          - name: mapreduce.map.java.opts
+          - value: "-Xmx512M"
