@@ -30,7 +30,7 @@
         -
           - name: dfs.datanode.data.dir
           - value: "${hadoop.tmp.dir}/dfs/data"
-      yarn-site:
+      yarn_site:
         -
           - name: yarn.acl.enable
           - value: false
@@ -40,10 +40,13 @@
         -
           - name: yarn.log-aggregation-enable
           - value: false
+        -
+          - name: yarn.resourcemanager.hostname
+          - value: localhost
       mapred_site:
         -
           - name: mapreduce.framework.name
-          - value: local
+          - value: yarn
         -
           - name: mapreduce.map.java.opts
           - value: "-Xmx512M"
