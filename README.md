@@ -24,6 +24,7 @@ Role Variables
 | hadoop\_namenode\_core\_site\_file | path to core-site.xml | "{{ hadoop\_namenode\_conf\_dir }}/core-site.xml" |
 | hadoop\_namenode\_hdfs\_site\_file | path to hdfs-site.xml | "{{ hadoop\_namenode\_conf\_dir }}/hdfs-site.xml" |
 | hadoop\_namenode\_mapred\_site\_file | path to mapred-site.xml | "{{ hadoop\_namenode\_conf\_dir }}/mapred-site.xml" |
+| hadoop_config | a hash of xml config (see the example below) | {} |
 
 
 Dependencies

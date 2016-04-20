@@ -11,3 +11,4 @@ hadoop_namenode_dfs_namenode_name_dir: "{{ hadoop_namenode_db_dir }}/dfs/name"
 hadoop_namenode_core_site_file: "{{ hadoop_namenode_conf_dir }}/core-site.xml"
 hadoop_namenode_hdfs_site_file: "{{ hadoop_namenode_conf_dir }}/hdfs-site.xml"
 hadoop_namenode_mapred_site_file: "{{ hadoop_namenode_conf_dir }}/mapred-site.xml"
+hadoop_config: {}
