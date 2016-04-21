@@ -10,7 +10,9 @@
   template:
     src: slaves.j2
     dest: "{{ hadoop_namenode_conf_dir }}/slaves"
-  notify: Restart namenode
+  notify:
+    - Restart namenode
+    - Restart resourcemanager
 
 - name: Create log directory
   file:
@@ -19,7 +21,9 @@
     owner: root
     group: "{{ hadoop_namenode_group }}"
     state: directory
-  notify: Restart namenode
+  notify:
+    - Restart namenode
+    - Restart resourcemanager
 
 - name: Create db directory
   file:
@@ -28,7 +32,9 @@
     owner: "{{ hadoop_namenode_user }}"
     group: "{{ hadoop_namenode_group }}"
     state: directory
-  notify: Restart namenode
+  notify:
+    - Restart namenode
+    - Restart resourcemanager
 
 - name: Create dfs.namenode.name.dir
   file:
@@ -37,7 +43,9 @@
     owner: "{{ hadoop_namenode_user }}"
     group: "{{ hadoop_namenode_group }}"
     state: directory
-  notify: Restart namenode
+  notify:
+    - Restart namenode
+    - Restart resourcemanager
 
 - include: configure-xml.yml
 

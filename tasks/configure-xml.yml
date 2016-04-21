@@ -6,6 +6,9 @@
     dest: "{{ hadoop_namenode_core_site_file }}"
     validate: "xmllint %s"
   when: hadoop_namenode_core_site_file
+  notify:
+    - Restart namenode
+    - Restart resourcemanager
 
 - name: "Configure {{ hadoop_namenode_hdfs_site_file }}"
   template:
@@ -13,6 +16,9 @@
     dest: "{{ hadoop_namenode_hdfs_site_file }}"
     validate: "xmllint %s"
   when: hadoop_namenode_hdfs_site_file
+  notify:
+    - Restart namenode
+    - Restart resourcemanager
 
 - name: "Configure {{ hadoop_namenode_mapred_site_file }}"
   template:
@@ -20,6 +26,9 @@
     dest: "{{ hadoop_namenode_mapred_site_file }}"
     validate: "xmllint %s"
   when: hadoop_namenode_mapred_site_file
+  notify:
+    - Restart namenode
+    - Restart resourcemanager
 
 - name: "Configure {{ hadoop_namenode_yarn_site_file }}"
   template:
@@ -27,3 +36,6 @@
     dest: "{{ hadoop_namenode_yarn_site_file }}"
     validate: "xmllint %s"
   when: hadoop_namenode_yarn_site_file
+  notify:
+    - Restart namenode
+    - Restart resourcemanager

@@ -5,3 +5,9 @@
     name: "{{ hadoop_namenode_service }}"
     state: restarted
     enabled: yes
+
+- name: Restart resourcemanager
+  service:
+    name: "{{ hadoop_namenode_resourcemanager_service }}"
+    state: restarted
+    enabled: yes
