@@ -46,6 +46,12 @@
   become_method: sudo
   when: not ls_output.stdout_lines
 
+- name: Start hadoop resourcemanager
+  service:
+    name: "{{ hadoop_namenode_resourcemanager_service }}"
+    enabled: true
+    state: started
+
 - name: Start hadoop namenode
   service:
     name: "{{ hadoop_namenode_service }}"

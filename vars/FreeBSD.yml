@@ -3,4 +3,5 @@ __hadoop_namenode_group: hadoop
 __hadoop_namenode_db_dir: /var/db/hadoop
 __hadoop_namenode_conf: /usr/local/etc/hadoop.conf
 __hadoop_namenode_service: namenode
+__hadoop_namenode_resourcemanager_service: resourcemanager
 __hadoop_namenode_conf_dir: /usr/local/etc/hadoop

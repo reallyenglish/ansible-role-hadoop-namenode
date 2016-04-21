@@ -14,3 +14,8 @@
   patch:
     src: patch-namenode
     dest: /usr/local/etc/rc.d/namenode
+
+- name: fix status command in resourcemanager
+  patch:
+    src: patch-resourcemanager
+    dest: /usr/local/etc/rc.d/resourcemanager

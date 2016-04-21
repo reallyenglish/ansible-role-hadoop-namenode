@@ -3,6 +3,7 @@ hadoop_namenode_group: "{{ __hadoop_namenode_group }}"
 hadoop_namenode_log_dir: /var/log/hadoop
 hadoop_namenode_db_dir: "{{ __hadoop_namenode_db_dir }}"
 hadoop_namenode_service: "{{ __hadoop_namenode_service }}"
+hadoop_namenode_resourcemanager_service: "{{ __hadoop_namenode_resourcemanager_service }}"
 hadoop_namenode_conf_dir: "{{ __hadoop_namenode_conf_dir }}"
 hadoop_namenode_flags: ""
 
