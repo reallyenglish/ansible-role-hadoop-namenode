@@ -10,7 +10,7 @@
   template:
     src: slaves.j2
     dest: "{{ hadoop_namenode_conf_dir }}/slaves"
-  notify: Restart datanode
+  notify: Restart namenode
 
 - name: Create log directory
   file:
