@@ -1,0 +1,47 @@
+--- /usr/local/etc/rc.d/resourcemanager.orig    2016-04-21 00:03:24.572283000 +0000
++++ /usr/local/etc/rc.d/resourcemanager 2016-04-21 00:05:13.640888000 +0000
+@@ -22,11 +22,44 @@
+ 
+ command="/usr/local/sbin/yarn-daemon.sh"
+ command_args='--config /usr/local/etc/hadoop start resourcemanager'
++pidfile="/var/run/hadoop/hadoop-hdfs-${name}.pid"
+ 
+ stop_cmd=resourcemanager_stop
++status_cmd=resourcemanager_status
+ 
+ resourcemanager_stop () {
+   su -m ${resourcemanager_user} -c "${command} --config /usr/local/etc/hadoop stop resourcemanager"
+ }
+ 
++resourcemanager_status()
++{
++    rc_pid=$(resourcemanager_check_pidfile $pidfile)
++ 
++    if [ -z "$rc_pid" ]; then
++        [ -n "$rc_fast" ] && return 0
++        echo "${name} not running? (check $pidfile)."
++        return 1
++    fi  
++    echo "${name} is running as pid ${rc_pid}."
++}
++
++resourcemanager_check_pidfile()
++{
++    _pidfile=$1
++    if [ -z "$_pidfile" ]; then
++        err 3 'USAGE: resourcemanager_check_pidfile pidfile'
++    fi  
++    if [ ! -f $_pidfile ]; then
++        debug "pid file ($_pidfile): not readable."
++        return
++    fi  
++    read _pid _junk < $_pidfile
++    if [ -z "$_pid" ]; then
++        debug "pid file ($_pidfile): no pid in file."
++        return
++    fi  
++    if [ -n "`/usr/bin/su -m ${resourcemanager_user} -c '/usr/local/bin/jps -l' | grep -e "^$_pid"`" ]; then
++        echo -n $_pid
++    fi  
++}
+ run_rc_command "$1"
