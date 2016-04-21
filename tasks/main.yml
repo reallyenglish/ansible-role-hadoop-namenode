@@ -6,6 +6,12 @@
 - include: install-FreeBSD.yml
   when: ansible_os_family == 'FreeBSD'
 
+- name: Create slaves file
+  template:
+    src: slaves.j2
+    dest: "{{ hadoop_namenode_conf_dir }}/slaves"
+  notify: Restart datanode
+
 - name: Create log directory
   file:
     path: "{{ hadoop_namenode_log_dir }}"

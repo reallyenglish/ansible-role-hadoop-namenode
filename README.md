@@ -45,6 +45,8 @@ Example Playbook
       - ansible-role-hadoop-namenode
     vars:
       hadoop_config:
+        slaves:
+          - localhost
         core_site:
           - 
             - name: fs.defaultFS

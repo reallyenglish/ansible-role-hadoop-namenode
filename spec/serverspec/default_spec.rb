@@ -19,12 +19,14 @@ ports   = [ 8020, 50070, 8033, 8088, 8032, 8030, 8031 ]
 log_dir = '/var/log/hadoop'
 db_dir  = '/var/lib/hadoop'
 conf_dir = '/etc/hadoop'
+slaves_file = '/etc/hadoop/slaves'
 
 case os[:family]
 when 'freebsd'
   package = 'hadoop2'
   db_dir = '/var/db/hadoop'
   conf_dir = '/usr/local/etc/hadoop'
+  slaves_file = '/usr/local/etc/hadoop/slaves'
 end
 
 core_site_xml   = "#{conf_dir}/core-site.xml"
@@ -94,6 +96,11 @@ describe file(db_dir) do
   it { should be_mode 755 }
   it { should be_owned_by user }
   it { should be_grouped_into group }
+end
+
+describe file(slaves_file) do
+  it { should be_file }
+  its(:content) { should match /localhost/ }
 end
 
 # case os[:family]
