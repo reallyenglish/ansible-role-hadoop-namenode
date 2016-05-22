@@ -1,6 +1,7 @@
 node {
   stage 'Checkout'
   checkout scm
+  sh '( cd .. && ln -s workspace ansible-role-hadoop-namenode )'
   sh 'env > env.txt'
   readFile('env.txt').split("\r?\n").each {
     println it
