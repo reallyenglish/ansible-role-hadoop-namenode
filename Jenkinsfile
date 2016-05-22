@@ -1,11 +1,9 @@
 node {
+  stage 'bundle'
+  sh 'bundle install --path vendor/bundle
   stage 'Checkout'
   checkout scm
   sh '( cd .. && ln -s workspace ansible-role-hadoop-namenode )'
-  sh 'env > env.txt'
-  readFile('env.txt').split("\r?\n").each {
-    println it
-  }
   stage 'Syntax check'
   try {
     sh 'ansible-playbook --syntax-check -i localhost test/integration/default.yml'
@@ -13,6 +11,8 @@ node {
   } catch (err) {
     currentBuild.result = 'FAILURE'
   }
+  stage 'bundle exec kitchen test'
+  sh 'bundle exec kitchen test'
   stage 'Notify'
   step([$class: 'GitHubCommitNotifier', resultOnFailure: 'FAILURE'])
 }
