@@ -1,4 +1,4 @@
-node {
+node ('virtualbox') {
   stage 'Checkout'
   checkout scm
   sh '( cd .. && if [ ! -h ansible-role-hadoop-namenode ]; then ln -s workspace ansible-role-hadoop-namenode; fi )'
