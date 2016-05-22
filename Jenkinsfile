@@ -4,7 +4,7 @@ node {
   sh '( cd .. && if [ ! -h ansible-role-hadoop-namenode ]; then ln -s workspace ansible-role-hadoop-namenode; fi )'
   stage 'bundle'
   sh 'bundle install --path vendor/bundle'
-  sh 'vagrant box add trombik/ansible-freebsd-10.3-amd64'
+  sh 'if vagrant box list | grep trombik/ansible-freebsd-10.3-amd64 >/dev/null; then echo "installed"; else vagrant box add trombik/ansible-freebsd-10.3-amd64; fi'
   stage 'Syntax check'
   try {
     sh 'ansible-playbook --syntax-check -i localhost test/integration/default.yml'
