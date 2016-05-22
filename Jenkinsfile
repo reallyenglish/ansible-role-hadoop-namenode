@@ -1,6 +1,6 @@
 node {
   stage 'bundle'
-  sh 'bundle install --path vendor/bundle
+  sh 'bundle install --path vendor/bundle'
   stage 'Checkout'
   checkout scm
   sh '( cd .. && ln -s workspace ansible-role-hadoop-namenode )'
