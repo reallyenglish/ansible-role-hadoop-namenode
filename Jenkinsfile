@@ -1,7 +1,7 @@
 node {
   stage 'Checkout'
   checkout scm
-  sh '( cd .. && if [ ! -h ansible-role-hadoop-namenode ]; then; ln -s workspace ansible-role-hadoop-namenode; fi )'
+  sh '( cd .. && if [ ! -h ansible-role-hadoop-namenode ]; then ln -s workspace ansible-role-hadoop-namenode; fi )'
   stage 'bundle'
   sh 'bundle install --path vendor/bundle'
   stage 'Syntax check'
