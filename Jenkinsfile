@@ -5,7 +5,7 @@ node {
   try {
     sh 'ansible-playbook --syntax-check -i localhost test/integration/default.yml'
     currentBuild.result = 'SUCCESS'
-  } catch {
+  } catch (err) {
     currentBuild.result = 'FAILURE'
   }
   stage 'Notify'
