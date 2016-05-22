@@ -9,25 +9,3 @@
   pkgng:
     name: py27-lxml
     state: present
-
-- name: upload patch-namenode to remote XXX https://github.com/ansible/ansible-modules-extras/issues/338
-  copy:
-    src: patch-namenode
-    dest: /tmp/patch-namenode
-
-- name: fix status command in namenode
-  patch:
-    remote_src: yes
-    src: /tmp/patch-namenode
-    dest: /usr/local/etc/rc.d/namenode
-
-- name: upload patch-resourcemanager to remote XXX https://github.com/ansible/ansible-modules-extras/issues/338
-  copy:
-    src: patch-resourcemanager
-    dest: /tmp/patch-resourcemanager
-
-- name: fix status command in resourcemanager
-  patch:
-    remote_src: yes
-    src: /tmp/patch-resourcemanager
-    dest: /usr/local/etc/rc.d/resourcemanager
