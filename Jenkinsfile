@@ -3,7 +3,7 @@ node {
   checkout scm
   stage 'Syntax check'
   try {
-    ansible-playbook --syntax-check -i localhost test/integration/default.yml
+    sh 'ansible-playbook --syntax-check -i localhost test/integration/default.yml'
     currentBuild.result = 'SUCCESS'
   } catch {
     currentBuild.result = 'FAILURE'
