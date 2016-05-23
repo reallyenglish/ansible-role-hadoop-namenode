@@ -1,6 +1,10 @@
 node ('virtualbox') {
   stage 'Checkout'
-  checkout scm
+  checkout([$class: 'GitSCM',
+    branches: [[name: "$branch"]],
+    userRemoteConfigs: [[url: "$url"]]
+    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'ansible-role-hadoop-namenode']],
+  ])
   sh '( cd .. && if [ ! -h ansible-role-hadoop-namenode ]; then ln -s workspace ansible-role-hadoop-namenode; fi )'
   stage 'bundle'
   sh 'bundle install --path vendor/bundle'
