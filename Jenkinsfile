@@ -1,6 +1,6 @@
 node ('virtualbox') {
   stage 'Checkout'
-  sh '[ ! -d ansible-role-hadoop-namenode ] && mkdir ansible-role-hadoop-namenode'
+  sh 'if [ ! -d ansible-role-hadoop-namenode ]; then mkdir ansible-role-hadoop-namenode; fi'
   dir('ansible-role-hadoop-namenode') {
     checkout scm
   }
