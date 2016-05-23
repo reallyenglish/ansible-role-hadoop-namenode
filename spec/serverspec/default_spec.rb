@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'serverspec'
 
-sleep 10
+sleep 30
 
 package = 'hadoop'
 service = 'namenode'
