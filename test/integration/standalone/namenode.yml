@@ -1,0 +1,94 @@
+---
+- hosts: namenode
+  become: yes
+  become_method: sudo
+  environment:
+    http_proxy: "{{ http_proxy | default() }}"
+    https_proxy: "{{ https_proxy | default() }}"
+    no_proxy: "{{ no_proxy | default() }}"
+
+  pre_tasks:
+    # XXX java.net.InetAddress.getLocalHost throws an exception without this
+    - shell: echo "127.0.0.1 localhost {{ ansible_hostname }} {{ ansible_fqdn }}" > /etc/hosts
+      changed_when: False
+    # XXX the latest haddop2, with "status" patches, is not available in the official repo
+    - file:
+        path: /usr/local/etc/pkg/repos
+        state: directory
+        mode: 755
+      changed_when: false
+      when: "{{ ansible_os_family == 'FreeBSD' }}"
+    - shell: "echo 'FreeBSD: { enabled:  no }' > /usr/local/etc/pkg/repos/FreeBSD.conf"
+      changed_when: false
+      when: "{{ ansible_os_family == 'FreeBSD' }}"
+    - shell: "echo 'reallyenglish: { url: \"pkg+http://10.3.build.reallyenglish.com/${ABI}\", mirror_type: \"srv\", signature_type: \"none\", enabled:  yes }' > /usr/local/etc/pkg/repos/reallyenglish.conf"
+      changed_when: false
+      when: "{{ ansible_os_family == 'FreeBSD' }}"
+  roles:
+    - role: ansible-role-hadoop-namenode
+  vars:
+    hadoop_config:
+      slaves:
+        - localhost
+      core_site:
+        - 
+          - name: fs.defaultFS
+          - value: 'hdfs://localhost/'
+        -
+          - name: hadoop.tmp.dir
+          - value: /var/db/hadoop
+        -
+          - name: io.file.buffer.size
+          - value: 131072
+      hdfs_site:
+        -
+          - name: dfs.namenode.name.dir
+          - value: "${hadoop.tmp.dir}/dfs/name"
+        - 
+          - name: dfs.blocksize
+          - value: 268435456
+        -
+          - name: dfs.namenode.handler.count 
+          - value: 100
+        -
+          - name: dfs.datanode.data.dir
+          - value: "${hadoop.tmp.dir}/dfs/data"
+      yarn_site:
+        -
+          - name: yarn.resourcemanager.scheduler.class
+          - value: org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler
+        -
+          - name: yarn.acl.enable
+          - value: false
+        -
+          - name: yarn.admin.acl
+          - value: "*"
+        -
+          - name: yarn.log-aggregation-enable
+          - value: false
+        -
+          - name: yarn.resourcemanager.hostname
+          - value: localhost
+        -
+          - name: yarn.scheduler.capacity.root.queues
+          - value: default
+        -
+          - name: yarn.scheduler.capacity.root.default.capacity
+          - value: 100
+        -
+          - name: yarn.scheduler.capacity.root.default.state
+          - value: RUNNING
+        -
+          - name: yarn.scheduler.capacity.root.default.user-limit-factor
+          - value: 1
+        -
+          - name: yarn.scheduler.capacity.root.default.maximum-capacity
+          - value: 100
+
+      mapred_site:
+        -
+          - name: mapreduce.framework.name
+          - value: yarn
+        -
+          - name: mapreduce.map.java.opts
+          - value: "-Xmx512M"
