@@ -9,7 +9,7 @@
 - name: Create slaves file
   template:
     src: slaves.j2
-    dest: "{{ hadoop_namenode_conf_dir }}/slaves"
+    dest: "{{ hadoop_conf_dir }}/slaves"
   notify:
     - Restart namenode
     - Restart resourcemanager

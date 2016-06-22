@@ -1,41 +1,41 @@
 ---
 
-- name: "Configure {{ hadoop_namenode_core_site_file }}"
+- name: "Configure {{ hadoop_core_site_file }}"
   template:
     src: core-site.xml.j2
-    dest: "{{ hadoop_namenode_core_site_file }}"
+    dest: "{{ hadoop_core_site_file }}"
     validate: "xmllint %s"
-  when: hadoop_namenode_core_site_file
+  when: hadoop_core_site_file
   notify:
     - Restart namenode
     - Restart resourcemanager
 
-- name: "Configure {{ hadoop_namenode_hdfs_site_file }}"
+- name: "Configure {{ hadoop_hdfs_site_file }}"
   template:
     src: hdfs-site.xml.j2
-    dest: "{{ hadoop_namenode_hdfs_site_file }}"
+    dest: "{{ hadoop_hdfs_site_file }}"
     validate: "xmllint %s"
-  when: hadoop_namenode_hdfs_site_file
+  when: hadoop_hdfs_site_file
   notify:
     - Restart namenode
     - Restart resourcemanager
 
-- name: "Configure {{ hadoop_namenode_mapred_site_file }}"
+- name: "Configure {{ hadoop_mapred_site_file }}"
   template:
     src: mapred-site.xml.j2
-    dest: "{{ hadoop_namenode_mapred_site_file }}"
+    dest: "{{ hadoop_mapred_site_file }}"
     validate: "xmllint %s"
-  when: hadoop_namenode_mapred_site_file
+  when: hadoop_mapred_site_file
   notify:
     - Restart namenode
     - Restart resourcemanager
 
-- name: "Configure {{ hadoop_namenode_yarn_site_file }}"
+- name: "Configure {{ hadoop_yarn_site_file }}"
   template:
     src: yarn-site.xml.j2
-    dest: "{{ hadoop_namenode_yarn_site_file }}"
+    dest: "{{ hadoop_yarn_site_file }}"
     validate: "xmllint %s"
-  when: hadoop_namenode_yarn_site_file
+  when: hadoop_yarn_site_file
   notify:
     - Restart namenode
     - Restart resourcemanager
