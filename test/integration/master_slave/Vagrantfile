@@ -46,6 +46,7 @@ Vagrant.configure("2") do |config|
       c.vm.network "private_network", ip: "192.168.84.10#{index}"
       c.vm.hostname = "namenode#{index}.virtualbox.reallyenglish.com"
       c.vm.provision :ansible do |ansible|
+        ansible.limit = "192.168.84.10#{index}"
         ansible.playbook = "site.yml"
         ansible.verbose = "v"
         ansible.extra_vars = {
