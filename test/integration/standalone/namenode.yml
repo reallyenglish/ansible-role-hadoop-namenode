@@ -16,10 +16,14 @@
         path: /usr/local/etc/pkg/repos
         state: directory
         mode: 755
+      changed_when: false
+      when: "{{ ansible_os_family == 'FreeBSD' }}"
     - shell: "echo 'FreeBSD: { enabled:  no }' > /usr/local/etc/pkg/repos/FreeBSD.conf"
       changed_when: false
+      when: "{{ ansible_os_family == 'FreeBSD' }}"
     - shell: "echo 'reallyenglish: { url: \"pkg+http://10.3.build.reallyenglish.com/${ABI}\", mirror_type: \"srv\", signature_type: \"none\", enabled:  yes }' > /usr/local/etc/pkg/repos/reallyenglish.conf"
       changed_when: false
+      when: "{{ ansible_os_family == 'FreeBSD' }}"
   roles:
     - role: ansible-role-hadoop-namenode
   vars:
