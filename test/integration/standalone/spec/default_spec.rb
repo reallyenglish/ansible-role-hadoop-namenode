@@ -24,4 +24,14 @@ describe server(:namenode) do
     expect(response.class).to eq(Net::HTTPOK)
   end
 
+  it 'should return NameNodeStatus == active' do
+    http_res = fetch "http://#{ server(:namenode).server.address }:50070/jmx?qry=Hadoop:service=NameNode,name=NameNodeStatus"
+    json = JSON.parse(http_res.body)
+    expect(json.class).to eq(Hash)
+    res = json['beans'].first
+    expect(res['name']).to eq('Hadoop:service=NameNode,name=NameNodeStatus')
+    expect(res['NNRole']).to eq('NameNode')
+    expect(res['State']).to eq('active')
+  end
+
 end
