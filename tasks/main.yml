@@ -12,18 +12,16 @@
     dest: "{{ hadoop_conf_dir }}/slaves"
   notify:
     - Restart namenode
-    - Restart resourcemanager
 
 - name: Create log directory
   file:
     path: "{{ hadoop_namenode_log_dir }}"
     mode: 0775
-    owner: root
+    owner: "{{ hadoop_namenode_user }}"
     group: "{{ hadoop_namenode_group }}"
     state: directory
   notify:
     - Restart namenode
-    - Restart resourcemanager
 
 - name: Create db directory
   file:
@@ -34,7 +32,6 @@
     state: directory
   notify:
     - Restart namenode
-    - Restart resourcemanager
 
 - name: Create dfs.namenode.name.dir
   file:
@@ -45,29 +42,83 @@
     state: directory
   notify:
     - Restart namenode
-    - Restart resourcemanager
 
 - include: configure-xml.yml
 
-- name: Register formated or not
-  shell: "ls -1 {{ hadoop_namenode_dfs_namenode_name_dir }}"
-  register: ls_output
-  changed_when: False
+- name: hadoop_namenode_dfs_namenode_name_dir
+  file:
+    path: "{{ hadoop_namenode_dfs_namenode_name_dir }}"
+    state: directory
+    owner: "{{ hadoop_namenode_user }}"
+    group: "{{ hadoop_namenode_group }}"
 
-- command: "hadoop namenode -format"
+- command: "hdfs haadmin -getServiceState {{ hadoop_namenode_master }}"
+  register: hdfs_haadmin_getservicestate_master
   become: yes
   become_user: "{{ hadoop_namenode_user }}"
   become_method: sudo
-  when: not ls_output.stdout_lines
+  changed_when: false
+  failed_when: false
 
-- name: Start hadoop resourcemanager
-  service:
-    name: "{{ hadoop_namenode_resourcemanager_service }}"
-    enabled: true
-    state: started
+- command: "hdfs haadmin -getServiceState {{ hadoop_namenode_slave }}"
+  register: hdfs_haadmin_getservicestate_slave
+  become: yes
+  become_user: "{{ hadoop_namenode_user }}"
+  become_method: sudo
+  changed_when: false
+  failed_when: false
+
+- set_fact:
+    format_needed_on_master: false
+
+- set_fact:
+    format_needed_on_master: true
+  when: "{{ hadoop_namenode_master == ansible_hostname and not 'active' in hdfs_haadmin_getservicestate_slave.stdout }}"
+
+# format when
+# - the node is defined as master
+# - the slave is not in 'active' state
+# - "{{ hadoop_namenode_dfs_namenode_name_dir }}/current/VERSION" does not exist
+
+- command: hdfs namenode -format -nonInteractive -force
+  args:
+    creates: "{{ hadoop_namenode_dfs_namenode_name_dir }}/current/VERSION"
+  become: yes
+  become_user: "{{ hadoop_namenode_user }}"
+  become_method: sudo
+  register: hdfs_namenode_format
+  when: "{{ hadoop_namenode_master == ansible_hostname and format_needed_on_master }}"
+
+# bootstrap slave when:
+# - the node is defined as slave
+# - "{{ hadoop_namenode_dfs_namenode_name_dir }}/current/VERSION" does not exist
+
+- command: hdfs namenode -bootstrapStandby -nonInteractive
+  args:
+    creates: "{{ hadoop_namenode_dfs_namenode_name_dir }}/current/VERSION"
+  become: yes
+  become_user: "{{ hadoop_namenode_user }}"
+  become_method: sudo
+  when: "{{ hadoop_namenode_slave == ansible_hostname }}"
 
 - name: Start hadoop namenode
   service:
     name: "{{ hadoop_namenode_service }}"
+    enabled: true
+    state: started
+
+- command: "zkCli.sh -server {{ hadoop_namenode_zookeeper_nodes | random }} -cmd 'ls /hadoop-ha'"
+  register: zkcli_result
+  changed_when: false
+
+- command: hdfs zkfc -formatZK -nonInteractive
+  become: yes
+  become_user: "{{ hadoop_namenode_user }}"
+  become_method: sudo
+  when: "{{ not '[' ~ hadoop_namenode_dfs_nameservices ~ ']' in zkcli_result.stdout_lines }}"
+
+- name: Start zkfc
+  service:
+    name: zkfc
     enabled: true
     state: started
