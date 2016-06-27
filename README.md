@@ -28,6 +28,8 @@ Role Variables
 | hadoop\_config | a hash of xml config (see the example below) | {} |
 | hadoop\_namenode\_zookeeper\_nodes | a list of zookeeper nodes | [] |
 | hadoop\_namenode\_dfs\_nameservices | dfs.nameservices | mycluster |
+| hadoop\_namenode\_master | hostname of master | "" |
+| hadoop\_namenode\_slave | hostname of slave | "" |
 
 
 Dependencies

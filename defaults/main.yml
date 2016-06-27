@@ -17,3 +17,5 @@ hadoop_config: {}
 
 hadoop_namenode_zookeeper_nodes: []
 hadoop_namenode_dfs_nameservices: mycluster
+hadoop_namenode_master: ""
+hadoop_namenode_slave: ""
