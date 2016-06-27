@@ -64,7 +64,8 @@ describe server(:namenode2) do
 
   it 'should become master' do
     result = current_server.ssh_exec('sudo -u hdfs hdfs haadmin -failover namenode1 namenode2')
-    expect(result.chomp).to match /Failover from .* to .* successful/
+    # Failover to NameNode at /192.168.84.101:8020 successful
+    expect(result.chomp).to match /Failover to NameNode at .* successful/
   end
 
   it 'should report it is the master' do
@@ -77,11 +78,10 @@ describe server(:namenode2) do
   end
 
 end
-
 describe server(:namenode1) do
   it 'should become master' do
     result = current_server.ssh_exec('sudo -u hdfs hdfs haadmin -failover namenode2 namenode1')
-    expect(result.chomp).to match /Failover from .* to .* successful/
+    expect(result.chomp).to match /Failover to NameNode at .* successful/
   end
 
   it 'should report it is the master' do
