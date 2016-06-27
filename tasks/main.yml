@@ -79,6 +79,9 @@
 # - the node is defined as master
 # - the slave is not in 'active' state
 # - "{{ hadoop_namenode_dfs_namenode_name_dir }}/current/VERSION" does not exist
+#
+# this task is supposed to be invoked when the master is initially
+# provisioned
 
 - command: hdfs namenode -format -nonInteractive -force
   args:
@@ -88,6 +91,23 @@
   become_method: sudo
   register: hdfs_namenode_format
   when: "{{ hadoop_namenode_master == ansible_hostname and format_needed_on_master }}"
+
+# bootstrap master when:
+# - the node is defined as master
+# - the slave is in 'acitve' state
+# - "{{ hadoop_namenode_dfs_namenode_name_dir }}/current/VERSION" does not exist
+#
+# this task is supposed to be invoked when:
+# - the master has been deleted
+# - the master is being provisioned
+
+- command: hdfs namenode -bootstrapStandby -nonInteractive -force
+  args:
+    creates: "{{ hadoop_namenode_dfs_namenode_name_dir }}/current/VERSION"
+  become: yes
+  become_user: "{{ hadoop_namenode_user }}"
+  become_method: sudo
+  when: "{{ hadoop_namenode_master == ansible_hostname and 'active' in hdfs_haadmin_getservicestate_slave.stdout }}"
 
 # bootstrap slave when:
 # - the node is defined as slave
