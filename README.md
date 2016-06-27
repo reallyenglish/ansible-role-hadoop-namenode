@@ -26,6 +26,7 @@ Role Variables
 | hadoop\_namenode\_hdfs\_site\_file | path to hdfs-site.xml | "{{ hadoop\_namenode\_conf\_dir }}/hdfs-site.xml" |
 | hadoop\_namenode\_mapred\_site\_file | path to mapred-site.xml | "{{ hadoop\_namenode\_conf\_dir }}/mapred-site.xml" |
 | hadoop\_config | a hash of xml config (see the example below) | {} |
+| hadoop\_namenode\_zookeeper\_nodes | a list of zookeeper nodes | [] |
 
 
 Dependencies
