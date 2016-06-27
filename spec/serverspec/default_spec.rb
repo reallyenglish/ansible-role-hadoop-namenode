@@ -7,17 +7,11 @@ package = 'hadoop'
 service = 'namenode'
 user    = 'hdfs'
 group   = 'hadoop'
-resourcemanager_service = 'resourcemanager'
 
 # tcp4  0/0/128        127.0.0.1.8020
 # tcp4  0/0/128        *.50070
-# tcp4  0/0/128        127.0.0.1.8033
-# tcp4  0/0/128        127.0.0.1.8088
-# tcp4  0/0/128        127.0.0.1.8032
-# tcp4  0/0/128        127.0.0.1.8030
-# tcp4  0/0/128        127.0.0.1.8031
 
-ports   = [ 8020, 50070, 8033, 8088, 8032, 8030, 8031 ]
+ports   = [ 8020, 50070 ]
 log_dir = '/var/log/hadoop'
 db_dir  = '/var/lib/hadoop'
 conf_dir = '/etc/hadoop'
@@ -89,7 +83,7 @@ end
 describe file(log_dir) do
   it { should exist }
   it { should be_mode 775 }
-  it { should be_owned_by 'root' }
+  it { should be_owned_by user }
   it { should be_grouped_into group }
 end
 
@@ -113,11 +107,6 @@ end
 # end
 
 describe service(service) do
-  it { should be_running }
-  it { should be_enabled }
-end
-
-describe service(resourcemanager_service) do
   it { should be_running }
   it { should be_enabled }
 end

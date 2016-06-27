@@ -1,0 +1,8 @@
+---
+
+- command: "hadoop namenode -format"
+  args:
+    creates: "{{ hadoop_namenode_dfs_namenode_name_dir }}/current/VERSION"
+  become: yes
+  become_user: "{{ hadoop_namenode_user }}"
+  become_method: sudo

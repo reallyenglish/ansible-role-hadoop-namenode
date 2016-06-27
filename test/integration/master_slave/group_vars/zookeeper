@@ -1,0 +1,9 @@
+zookeeper_config: |
+  tickTime=2000
+  dataDir=/var/db/zookeeper
+  clientPort=2181
+  initLimit=5
+  syncLimit=2
+  server.1=192.168.84.201:2888:3888
+  server.2=192.168.84.202:2888:3888
+  server.3=192.168.84.203:2888:3888

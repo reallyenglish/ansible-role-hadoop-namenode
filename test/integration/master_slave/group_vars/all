@@ -1,0 +1,70 @@
+hadoop_namenode_enable_ha: true
+
+hadoop_namenode_master: namenode1
+hadoop_namenode_slave: namenode2
+
+hadoop_journalnode_nodes:
+  - 192.168.84.201
+  - 192.168.84.202
+  - 192.168.84.203
+
+hadoop_namenode_zookeeper_nodes:
+  - 192.168.84.201:2181
+  - 192.168.84.202:2181
+  - 192.168.84.201:2181
+hadoop_namenode_dfs_nameservices: mycluster
+
+hadoop_namenode_db_dir: /var/db/namenode
+hadoop_namenode_dfs_namenode_name_dir: "{{ hadoop_namenode_db_dir }}/dfs/name"
+hadoop_journalnode_db_dir: /var/db/journalnode
+
+hadoop_config:
+  slaves: []
+  core_site:
+    -
+      - name: fs.defaultFS
+      - value: "hdfs://{{ hadoop_namenode_master }}:8020/"
+    -
+      - name: dfs.journalnode.edits.dir
+      - value: "{{ hadoop_journalnode_db_dir }}"
+  hdfs_site:
+    -
+      - name: dfs.nameservices
+      - value: "{{ hadoop_namenode_dfs_nameservices }}"
+    - 
+      - name: dfs.ha.namenodes.mycluster
+      - value: namenode1,namenode2
+    -
+      - name: dfs.namenode.rpc-address.mycluster.namenode1
+      - value: 192.168.84.101:8020
+    -
+      - name: dfs.namenode.rpc-address.mycluster.namenode2
+      - value: 192.168.84.102:8020
+    -
+      - name: dfs.namenode.http-address.mycluster.namenode1
+      - value: 192.168.84.101:5070
+    -
+      - name: dfs.namenode.http-address.mycluster.namenode2
+      - value: 192.168.84.102:5070
+    -
+      - name: dfs.namenode.shared.edits.dir
+      - value: qjournal://192.168.84.201:8485;192.168.84.202:8485;192.168.84.203:8485/mycluster
+    -
+      - name: dfs.namenode.name.dir
+      - value: "file://{{ hadoop_namenode_dfs_namenode_name_dir }}"
+    -
+      - name: dfs.client.failover.proxy.provider.mycluster
+      - value: org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider
+    -
+      # when shared state storage is QJM, no fencing is required because QJM
+      # inherently enforces single-writer semantics at the storage level
+      - name: dfs.ha.fencing.methods
+      - value: shell(/usr/bin/true)
+    -
+      - name: dfs.ha.automatic-failover.enabled
+      - value: true
+    -
+      - name: ha.zookeeper.quorum
+      - value: 192.168.84.201:2181,192.168.84.202:2181,192.168.84.203:2181
+  yarn_site: []
+  mapred_site: []

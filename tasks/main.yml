@@ -12,18 +12,16 @@
     dest: "{{ hadoop_conf_dir }}/slaves"
   notify:
     - Restart namenode
-    - Restart resourcemanager
 
 - name: Create log directory
   file:
     path: "{{ hadoop_namenode_log_dir }}"
     mode: 0775
-    owner: root
+    owner: "{{ hadoop_namenode_user }}"
     group: "{{ hadoop_namenode_group }}"
     state: directory
   notify:
     - Restart namenode
-    - Restart resourcemanager
 
 - name: Create db directory
   file:
@@ -34,7 +32,6 @@
     state: directory
   notify:
     - Restart namenode
-    - Restart resourcemanager
 
 - name: Create dfs.namenode.name.dir
   file:
@@ -45,29 +42,20 @@
     state: directory
   notify:
     - Restart namenode
-    - Restart resourcemanager
 
 - include: configure-xml.yml
 
-- name: Register formated or not
-  shell: "ls -1 {{ hadoop_namenode_dfs_namenode_name_dir }}"
-  register: ls_output
-  changed_when: False
+- include: ha-namenode.yml
+  when: "{{ hadoop_namenode_enable_ha }}"
 
-- command: "hadoop namenode -format"
-  become: yes
-  become_user: "{{ hadoop_namenode_user }}"
-  become_method: sudo
-  when: not ls_output.stdout_lines
-
-- name: Start hadoop resourcemanager
-  service:
-    name: "{{ hadoop_namenode_resourcemanager_service }}"
-    enabled: true
-    state: started
+- include: standalone-namenode.yml
+  when: "{{ not hadoop_namenode_enable_ha }}"
 
 - name: Start hadoop namenode
   service:
     name: "{{ hadoop_namenode_service }}"
     enabled: true
     state: started
+
+- include: ha-zkfc.yml
+  when: "{{ hadoop_namenode_enable_ha }}"
