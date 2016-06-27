@@ -57,7 +57,7 @@ hadoop_config:
       # when shared state storage is QJM, no fencing is required because QJM
       # inherently enforces single-writer semantics at the storage level
       - name: dfs.ha.fencing.methods
-      - value: shell(/bin/true)
+      - value: shell(/usr/bin/true)
     -
       - name: dfs.ha.automatic-failover.enabled
       - value: true
