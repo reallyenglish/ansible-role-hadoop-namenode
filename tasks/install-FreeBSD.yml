@@ -9,3 +9,9 @@
   pkgng:
     name: py27-lxml
     state: present
+
+- name: Install zookeeper
+  # zkCli.sh is required to see if "hdfs zkfc -formatZK" is necessary
+  pkgng:
+    name: zookeeper
+    state: present
