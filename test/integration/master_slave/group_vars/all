@@ -1,11 +1,8 @@
-hadoop_namenode_master: namenode1
-hadoop_namenode_slave: namenode2
 hadoop_journalnode_nodes:
   - 192.168.84.201
   - 192.168.84.202
   - 192.168.84.203
-master:
-  192.168.84.101
+
 hadoop_namenode_zookeeper_nodes:
   - 192.168.84.201:2181
   - 192.168.84.202:2181
