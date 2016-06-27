@@ -30,6 +30,7 @@ Role Variables
 | hadoop\_namenode\_dfs\_nameservices | dfs.nameservices | mycluster |
 | hadoop\_namenode\_master | hostname of master | "" |
 | hadoop\_namenode\_slave | hostname of slave | "" |
+| hadoop\_namenode\_enable\_ha | enable HA configuration | false |
 
 
 Dependencies

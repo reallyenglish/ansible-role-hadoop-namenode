@@ -1,3 +1,5 @@
+hadoop_namenode_enable_ha: true
+
 hadoop_namenode_master: namenode1
 hadoop_namenode_slave: namenode2
 

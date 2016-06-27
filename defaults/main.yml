@@ -15,6 +15,7 @@ hadoop_mapred_site_file: "{{ hadoop_conf_dir }}/mapred-site.xml"
 hadoop_yarn_site_file: "{{ hadoop_conf_dir }}/yarn-site.xml"
 hadoop_config: {}
 
+hadoop_namenode_enable_ha: false
 hadoop_namenode_zookeeper_nodes: []
 hadoop_namenode_dfs_nameservices: mycluster
 hadoop_namenode_master: ""
