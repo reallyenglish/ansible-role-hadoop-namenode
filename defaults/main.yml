@@ -16,3 +16,4 @@ hadoop_yarn_site_file: "{{ hadoop_conf_dir }}/yarn-site.xml"
 hadoop_config: {}
 
 hadoop_namenode_zookeeper_nodes: []
+hadoop_namenode_dfs_nameservices: mycluster
