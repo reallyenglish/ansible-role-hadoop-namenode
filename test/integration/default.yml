@@ -4,7 +4,9 @@
     - shell: echo "127.0.0.1 localhost {{ ansible_hostname }}" > /etc/hosts
       changed_when: False
     # XXX the latest haddop2, with "status" patches, is not available in the official repo
-    - shell: mkdir -p /usr/local/etc/pkg/repos
+    - file:
+        path: /usr/local/etc/pkg/repos
+        state: directory
       changed_when: false
     - shell: "echo 'FreeBSD: { enabled:  no }' > /usr/local/etc/pkg/repos/FreeBSD.conf"
       changed_when: false
