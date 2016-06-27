@@ -8,7 +8,6 @@
   when: hadoop_core_site_file
   notify:
     - Restart namenode
-    - Restart resourcemanager
 
 - name: "Configure {{ hadoop_hdfs_site_file }}"
   template:
@@ -18,7 +17,6 @@
   when: hadoop_hdfs_site_file
   notify:
     - Restart namenode
-    - Restart resourcemanager
 
 - name: "Configure {{ hadoop_mapred_site_file }}"
   template:
@@ -28,7 +26,6 @@
   when: hadoop_mapred_site_file
   notify:
     - Restart namenode
-    - Restart resourcemanager
 
 - name: "Configure {{ hadoop_yarn_site_file }}"
   template:
@@ -38,4 +35,3 @@
   when: hadoop_yarn_site_file
   notify:
     - Restart namenode
-    - Restart resourcemanager
