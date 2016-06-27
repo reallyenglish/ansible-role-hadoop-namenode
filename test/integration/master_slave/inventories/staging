@@ -7,6 +7,12 @@
 192.168.84.202
 192.168.84.203
 
+[zookeeper]
+192.168.84.201
+192.168.84.202
+192.168.84.203
+
 [all:children]
 namenode
 journalnode
+zookeeper

@@ -1,2 +1,3 @@
 - include: namenode.yml
 - include: journalnode.yml
+- include: zookeeper.yml
