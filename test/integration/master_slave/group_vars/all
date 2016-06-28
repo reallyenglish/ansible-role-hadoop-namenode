@@ -4,9 +4,9 @@ hadoop_namenode_master: namenode1
 hadoop_namenode_slave: namenode2
 
 hadoop_journalnode_nodes:
-  - 192.168.84.201
-  - 192.168.84.202
-  - 192.168.84.203
+  - 192.168.84.201:8485
+  - 192.168.84.202:8485
+  - 192.168.84.203:8485
 
 hadoop_namenode_zookeeper_nodes:
   - 192.168.84.201:2181
@@ -42,28 +42,28 @@ hadoop_config:
       - name: dfs.hosts
       - value: "{{ hadoop_namenode_dfs_hosts_file }}"
     - 
-      - name: dfs.ha.namenodes.mycluster
-      - value: namenode1,namenode2
+      - name: "dfs.ha.namenodes.{{ hadoop_namenode_dfs_nameservices }}"
+      - value: "{{ hadoop_namenode_master }},{{ hadoop_namenode_slave }}"
     -
-      - name: dfs.namenode.rpc-address.mycluster.namenode1
+      - name: "dfs.namenode.rpc-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_master }}"
       - value: 192.168.84.101:8020
     -
-      - name: dfs.namenode.rpc-address.mycluster.namenode2
+      - name: "dfs.namenode.rpc-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_slave }}"
       - value: 192.168.84.102:8020
     -
-      - name: dfs.namenode.http-address.mycluster.namenode1
+      - name: "dfs.namenode.http-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_master }}"
       - value: 192.168.84.101:5070
     -
-      - name: dfs.namenode.http-address.mycluster.namenode2
+      - name: "dfs.namenode.http-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_slave }}"
       - value: 192.168.84.102:5070
     -
       - name: dfs.namenode.shared.edits.dir
-      - value: qjournal://192.168.84.201:8485;192.168.84.202:8485;192.168.84.203:8485/mycluster
+      - value: "qjournal://{{ hadoop_journalnode_nodes | join(';') }}/{{ hadoop_namenode_dfs_nameservices }}"
     -
       - name: dfs.namenode.name.dir
       - value: "file://{{ hadoop_namenode_dfs_namenode_name_dir }}"
     -
-      - name: dfs.client.failover.proxy.provider.mycluster
+      - name: "dfs.client.failover.proxy.provider.{{ hadoop_namenode_dfs_nameservices }}"
       - value: org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider
     -
       # when shared state storage is QJM, no fencing is required because QJM
@@ -75,7 +75,7 @@ hadoop_config:
       - value: true
     -
       - name: ha.zookeeper.quorum
-      - value: 192.168.84.201:2181,192.168.84.202:2181,192.168.84.203:2181
+      - value: "{{ hadoop_namenode_zookeeper_nodes | join(',') }}"
     -
       - name: dfs.datanode.data.dir
       - value: "file://{{ hadoop_datanode_db_dir }}"
