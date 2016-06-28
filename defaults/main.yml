@@ -20,3 +20,6 @@ hadoop_namenode_zookeeper_nodes: []
 hadoop_namenode_dfs_nameservices: mycluster
 hadoop_namenode_master: ""
 hadoop_namenode_slave: ""
+
+hadoop_namenode_dfs_hosts_file: "{{ hadoop_conf_dir }}/dfs_hosts"
+hadoop_namenode_dfs_hosts: []

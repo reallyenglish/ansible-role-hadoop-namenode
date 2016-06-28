@@ -33,6 +33,14 @@
   notify:
     - Restart namenode
 
+- name: Create dfs_hosts
+  template:
+    dest: "{{ hadoop_namenode_dfs_hosts_file }}"
+    src: dfs_hosts.j2
+    owner: "{{ hadoop_namenode_user }}"
+    group: "{{ hadoop_namenode_group }}"
+    mode: 0644
+
 - name: Create dfs.namenode.name.dir
   file:
     path: "{{ hadoop_namenode_dfs_namenode_name_dir }}"
