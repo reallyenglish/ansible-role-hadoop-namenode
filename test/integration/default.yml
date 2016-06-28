@@ -15,6 +15,8 @@
   roles:
     - ansible-role-hadoop-namenode
   vars:
+    hadoop_namenode_dfs_hosts:
+      - 192.168.10.1
     hadoop_config:
       slaves:
         - localhost
@@ -32,6 +34,9 @@
         -
           - name: dfs.namenode.name.dir
           - value: "${hadoop.tmp.dir}/dfs/name"
+        -
+          - name: dfs.hosts
+          - value: "{{ hadoop_namenode_dfs_hosts_file }}"
         - 
           - name: dfs.blocksize
           - value: 268435456

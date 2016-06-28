@@ -29,6 +29,7 @@ core_site_xml   = "#{conf_dir}/core-site.xml"
 hdfs_site_xml   = "#{conf_dir}/hdfs-site.xml"
 yarn_site_xml   = "#{conf_dir}/yarn-site.xml"
 mapred_site_xml = "#{conf_dir}/mapred-site.xml"
+dfs_hosts_file  = "#{conf_dir}/dfs_hosts"
 
 describe package(package) do
   it { should be_installed }
@@ -97,6 +98,11 @@ end
 describe file(slaves_file) do
   it { should be_file }
   its(:content) { should match /localhost/ }
+end
+
+describe file(dfs_hosts_file) do
+  it { should be_file }
+  its(:content) { should match /192\.168\.10\.1/ }
 end
 
 # case os[:family]
