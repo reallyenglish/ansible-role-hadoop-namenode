@@ -8,9 +8,6 @@
     no_proxy: "{{ no_proxy | default() }}"
 
   pre_tasks:
-    # XXX java.net.InetAddress.getLocalHost throws an exception without this
-    - shell: echo "127.0.0.1 localhost {{ ansible_hostname }} {{ ansible_fqdn }}" > /etc/hosts
-      changed_when: False
     # XXX the latest haddop2, with "status" patches, is not available in the official repo
     - file:
         path: /usr/local/etc/pkg/repos
@@ -25,4 +22,5 @@
       changed_when: false
       when: "{{ ansible_os_family == 'FreeBSD' }}"
   roles:
+    - role: ansible-role-hosts
     - role: ansible-role-hadoop-namenode
