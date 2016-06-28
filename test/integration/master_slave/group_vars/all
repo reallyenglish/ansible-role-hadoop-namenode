@@ -88,3 +88,21 @@ hadoop_config:
       - value: 3
   yarn_site: []
   mapred_site: []
+
+hosts_map:
+  "192.168.84.201":
+    - journalnode1
+  "192.168.84.202":
+    - journalnode2
+  "192.168.84.203":
+    - journalnode3
+  "192.168.84.101":
+    - namenode1
+  "192.168.84.102":
+    - namenode2
+  "192.168.84.121":
+    - datanode1
+  "192.168.84.122":
+    - datanode2
+  "192.168.84.123":
+    - datanode3

@@ -10,6 +10,7 @@ required_roles = %w[
   ansible-role-hadoop-journalnode
   ansible-role-hadoop-datanode
   ansible-role-zookeeper
+  ansible-role-hosts
 ]
 
 def fetch(uri_str, limit = 10)
