@@ -15,3 +15,9 @@
     name: zkfc
     enabled: true
     state: started
+
+- name: Restart zkfc
+  service:
+    name: zkfc
+    state: restarted
+  when: "{{ hadoop_config_changed }}"

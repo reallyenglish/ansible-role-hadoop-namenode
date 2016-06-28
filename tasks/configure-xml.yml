@@ -6,6 +6,7 @@
     dest: "{{ hadoop_core_site_file }}"
     validate: "xmllint %s"
   when: hadoop_core_site_file
+  register: core_site
   notify:
     - Restart namenode
 
@@ -15,6 +16,7 @@
     dest: "{{ hadoop_hdfs_site_file }}"
     validate: "xmllint %s"
   when: hadoop_hdfs_site_file
+  register: hdfs_site
   notify:
     - Restart namenode
 
@@ -24,6 +26,7 @@
     dest: "{{ hadoop_mapred_site_file }}"
     validate: "xmllint %s"
   when: hadoop_mapred_site_file
+  register: mapred_site
   notify:
     - Restart namenode
 
@@ -33,5 +36,12 @@
     dest: "{{ hadoop_yarn_site_file }}"
     validate: "xmllint %s"
   when: hadoop_yarn_site_file
+  register: yarn_site
   notify:
     - Restart namenode
+
+# XXX restart hadoop services when hadoop_config_changed is true
+# you cannot "notify" here because zkfc is not enabled when standalone
+- set_fact:
+    hadoop_config_changed: true
+  when: "{{ core_site.changed or hdfs_site.changed or mapred_site.changed or yarn_site.changed or (hadoop_config_changed is defined and hadoop_config_changed) }}"
