@@ -17,6 +17,7 @@ hadoop_namenode_dfs_nameservices: mycluster
 hadoop_namenode_db_dir: /var/db/namenode
 hadoop_namenode_dfs_namenode_name_dir: "{{ hadoop_namenode_db_dir }}/dfs/name"
 hadoop_journalnode_db_dir: /var/db/journalnode
+hadoop_datanode_db_dir: /var/db/datanode
 
 hadoop_config:
   slaves: []
@@ -66,5 +67,12 @@ hadoop_config:
     -
       - name: ha.zookeeper.quorum
       - value: 192.168.84.201:2181,192.168.84.202:2181,192.168.84.203:2181
+    -
+      - name: dfs.datanode.data.dir
+      - value: "file://{{ hadoop_datanode_db_dir }}"
+    -
+      # disable reverse DNS lookup
+      - name: dfs.namenode.datanode.registration.ip-hostname-check
+      - value: false
   yarn_site: []
   mapred_site: []

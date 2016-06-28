@@ -59,6 +59,7 @@ Vagrant.configure("2") do |config|
       end
     end
   end
+
   [ 1, 2 ].each do |index|
     config.vm.define "namenode#{index}" do |c|
       c.vm.network "private_network", ip: "192.168.84.10#{index}"
@@ -77,5 +78,25 @@ Vagrant.configure("2") do |config|
       end
     end
   end
+
+  [ 1, 2, 3 ].each do |index|
+    config.vm.define "datanode#{index}" do |c|
+      c.vm.network "private_network", ip: "192.168.84.12#{index}"
+      c.vm.hostname = "journalnode#{index}.virtualbox.reallyenglish.com"
+      c.vm.provision :ansible do |ansible|
+        ansible.limit = "192.168.84.12#{index}"
+        ansible.playbook = "site.yml"
+        ansible.extra_vars = {
+          ansible_python_interpreter: '/usr/local/bin/python',
+          http_proxy: http_proxy,
+          https_proxy: http_proxy,
+          no_proxy: 'localhost,127.0.0.1,.example.com'
+        }
+        ansible.inventory_path = 'inventories/staging'
+        ansible.verbose = 'v'
+      end
+    end
+  end
+
 end
 # vim: ft=ruby

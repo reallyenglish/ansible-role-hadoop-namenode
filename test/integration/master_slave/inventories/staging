@@ -12,7 +12,13 @@
 192.168.84.202
 192.168.84.203
 
+[datanode]
+192.168.84.121
+192.168.84.122
+192.168.84.123
+
 [all:children]
 namenode
 journalnode
 zookeeper
+datanode
