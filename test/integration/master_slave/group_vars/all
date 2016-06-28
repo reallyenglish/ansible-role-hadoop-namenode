@@ -74,5 +74,8 @@ hadoop_config:
       # disable reverse DNS lookup
       - name: dfs.namenode.datanode.registration.ip-hostname-check
       - value: false
+    -
+      - name: dfs.replication
+      - value: 3
   yarn_site: []
   mapred_site: []
