@@ -9,7 +9,9 @@
 
   pre_tasks:
     # XXX java.net.InetAddress.getLocalHost throws an exception without this
-    - shell: echo "127.0.0.1 localhost {{ ansible_hostname }} {{ ansible_fqdn }}" > /etc/hosts
+    - shell: echo "127.0.0.1 localhost" > /etc/hosts
+      changed_when: False
+    - shell: echo "{{ ansible_all_ipv4_addresses[1] }} {{ ansible_hostname }} {{ ansible_fqdn }}" >> /etc/hosts
       changed_when: False
     # XXX the latest haddop2, with "status" patches, is not available in the official repo
     - file:
