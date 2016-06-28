@@ -4,14 +4,15 @@ hadoop_namenode_master: namenode1
 hadoop_namenode_slave: namenode2
 
 hadoop_journalnode_nodes:
-  - 192.168.84.201:8485
-  - 192.168.84.202:8485
-  - 192.168.84.203:8485
+  - journalnode1:8485
+  - journalnode2:8485
+  - journalnode3:8485
 
 hadoop_namenode_zookeeper_nodes:
-  - 192.168.84.201:2181
-  - 192.168.84.202:2181
-  - 192.168.84.201:2181
+  - journalnode1:2181
+  - journalnode2:2181
+  - journalnode3:2181
+
 hadoop_namenode_dfs_nameservices: mycluster
 
 hadoop_namenode_dfs_hosts_file: "{{ hadoop_conf_dir }}/dfs_hosts"
@@ -46,16 +47,16 @@ hadoop_config:
       - value: "{{ hadoop_namenode_master }},{{ hadoop_namenode_slave }}"
     -
       - name: "dfs.namenode.rpc-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_master }}"
-      - value: 192.168.84.101:8020
+      - value: "{{ hadoop_namenode_master }}:8020"
     -
       - name: "dfs.namenode.rpc-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_slave }}"
-      - value: 192.168.84.102:8020
+      - value: "{{ hadoop_namenode_slave }}:8020"
     -
       - name: "dfs.namenode.http-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_master }}"
-      - value: 192.168.84.101:5070
+      - value:"{{ hadoop_namenode_master }}:5070"
     -
       - name: "dfs.namenode.http-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_slave }}"
-      - value: 192.168.84.102:5070
+      - value: "{{ hadoop_namenode_slave }}:5070"
     -
       - name: dfs.namenode.shared.edits.dir
       - value: "qjournal://{{ hadoop_journalnode_nodes | join(';') }}/{{ hadoop_namenode_dfs_nameservices }}"
