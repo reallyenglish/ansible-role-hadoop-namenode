@@ -14,6 +14,12 @@ hadoop_namenode_zookeeper_nodes:
   - 192.168.84.201:2181
 hadoop_namenode_dfs_nameservices: mycluster
 
+hadoop_namenode_dfs_hosts_file: "{{ hadoop_conf_dir }}/dfs_hosts"
+hadoop_namenode_dfs_hosts:
+  - 192.168.84.121
+  - 192.168.84.122
+  - 192.168.84.123
+
 hadoop_namenode_db_dir: /var/db/namenode
 hadoop_namenode_dfs_namenode_name_dir: "{{ hadoop_namenode_db_dir }}/dfs/name"
 hadoop_journalnode_db_dir: /var/db/journalnode
@@ -32,6 +38,9 @@ hadoop_config:
     -
       - name: dfs.nameservices
       - value: "{{ hadoop_namenode_dfs_nameservices }}"
+    -
+      - name: dfs.hosts
+      - value: "{{ hadoop_namenode_dfs_hosts_file }}"
     - 
       - name: dfs.ha.namenodes.mycluster
       - value: namenode1,namenode2
