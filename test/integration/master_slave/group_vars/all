@@ -92,17 +92,25 @@ hadoop_config:
 hosts_map:
   "192.168.84.201":
     - journalnode1
+    - journalnode1.virtualbox.reallyenglish.com
   "192.168.84.202":
     - journalnode2
+    - journalnode2.virtualbox.reallyenglish.com
   "192.168.84.203":
     - journalnode3
+    - journalnode3.virtualbox.reallyenglish.com
   "192.168.84.101":
     - namenode1
+    - namenode1.virtualbox.reallyenglish.com
   "192.168.84.102":
     - namenode2
+    - namenode2.virtualbox.reallyenglish.com
   "192.168.84.121":
     - datanode1
+    - datanode1.virtualbox.reallyenglish.com
   "192.168.84.122":
     - datanode2
+    - datanode2.virtualbox.reallyenglish.com
   "192.168.84.123":
     - datanode3
+    - datanode3.virtualbox.reallyenglish.com
