@@ -13,6 +13,10 @@
       changed_when: False
     - shell: echo "{{ ansible_all_ipv4_addresses[1] }} {{ ansible_hostname }} {{ ansible_fqdn }}" >> /etc/hosts
       changed_when: False
+    - shell: echo "192.168.84.101 namenode1" >> /etc/hosts
+      changed_when: False
+    - shell: echo "192.168.84.102 namenode2" >> /etc/hosts
+      changed_when: False
     # XXX the latest haddop2, with "status" patches, is not available in the official repo
     - file:
         path: /usr/local/etc/pkg/repos
