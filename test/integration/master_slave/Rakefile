@@ -6,7 +6,11 @@ require 'tempfile'
 test_dir = Pathname.new(__FILE__).dirname
 role_dir = Pathname.new(test_dir).parent.parent.parent
 role_name = Pathname.new(role_dir).basename
-required_roles = %w[ ansible-role-hadoop-journalnode ansible-role-zookeeper ]
+required_roles = %w[
+  ansible-role-hadoop-journalnode
+  ansible-role-hadoop-datanode
+  ansible-role-zookeeper
+]
 
 def fetch(uri_str, limit = 10)
   raise ArgumentError, 'too many HTTP redirects' if limit == 0
