@@ -94,3 +94,27 @@ describe server(:namenode1) do
   end
 
 end
+
+describe server(:datanode1) do
+
+  it 'should create a directory /foo' do
+    result = current_server.ssh_exec('sudo -u hdfs hdfs dfs -mkdir /foo && echo OK')
+    expect(result.chomp).to match /OK/
+  end
+
+  it 'should create a file /foo/hosts' do
+    result = current_server.ssh_exec('sudo -u hdfs hdfs dfs -put /etc/hosts /foo/hosts && echo OK')
+    expect(result.chomp).to match /OK/
+  end
+
+  it 'should create delete /foo/hosts' do
+    result = current_server.ssh_exec('sudo -u hdfs hdfs dfs -rm /foo/hosts && echo OK')
+    expect(result.chomp).to match /OK/
+  end
+
+  it 'should rmdir /foo' do
+    result = current_server.ssh_exec('sudo -u hdfs hdfs dfs -rmdir /foo && echo OK')
+    expect(result.chomp).to match /OK/
+  end
+
+end

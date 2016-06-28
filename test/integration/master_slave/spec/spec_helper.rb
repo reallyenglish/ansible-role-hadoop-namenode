@@ -42,6 +42,15 @@ Infrataster::Server.define(
   vagrant: true
 )
 
+1.upto(3).each do |i|
+  hostname = "datanode#{i}"
+  Infrataster::Server.define(
+    hostname.to_sym,
+    "192.168.84.12#{i}",
+    vagrant: true
+  )
+end
+
 def fetch(uri_str, limit = 10)
   raise ArgumentError, 'too many HTTP redirects' if limit == 0
   response = Net::HTTP.get_response(URI(uri_str))
