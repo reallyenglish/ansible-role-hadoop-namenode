@@ -53,7 +53,7 @@ hadoop_config:
       - value: "{{ hadoop_namenode_slave }}:8020"
     -
       - name: "dfs.namenode.http-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_master }}"
-      - value:"{{ hadoop_namenode_master }}:5070"
+      - value: "{{ hadoop_namenode_master }}:5070"
     -
       - name: "dfs.namenode.http-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_slave }}"
       - value: "{{ hadoop_namenode_slave }}:5070"
@@ -115,3 +115,6 @@ hosts_map:
   "192.168.84.123":
     - datanode3
     - datanode3.virtualbox.reallyenglish.com
+
+# XXX the latest haddop2, with "status" patches, is not available in the official repo
+freebsd_repos_url: pkg+http://10.3.build.reallyenglish.com/${ABI}
