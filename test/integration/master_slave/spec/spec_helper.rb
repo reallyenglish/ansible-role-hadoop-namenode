@@ -90,6 +90,71 @@ def retry_and_sleep(options = {}, &block)
   end
 end
 
+require 'shellwords'
+class Vagrant
+
+  def initialize
+    @status # Process::Status
+    @out
+    @err
+  end
+
+  def up(server)
+    execute('up', '', server)
+  end
+
+  def boot(server)
+    execute('up', '--no-provision', server)
+  end
+
+  def provision(server)
+    execute('provision', '', server)
+  end
+
+  def destroy(server)
+    execute('destroy', '--force', server)
+  end
+
+  def execute(command, opt, server)
+    begin
+      @out, @err, @status = Open3.capture3("vagrant #{Shellwords.escape(command)} #{Shellwords.escape(opt)} #{Shellwords.escape(server)}")
+    rescue SystemCallError => e
+      @status = e
+    end
+    status
+  end
+
+  def status
+    @status
+  end
+
+  def stdout
+    @out
+  end
+
+  def stdout_lines
+    @out.split("\n").to_a
+  end
+
+  def stderr
+    @err
+  end
+
+  def stderr_lines
+    @err.split("\n").to_a
+  end
+
+  def status
+    @status
+  end
+
+  def success?
+    return  false if @success.nil?
+    return false if @status.is_a?(Exception)
+    @status.success?
+  end
+end
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true

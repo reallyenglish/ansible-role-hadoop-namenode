@@ -200,6 +200,70 @@ describe server(:datanode1) do
 
 end
 
+describe server(:namenode1) do
+
+  let(:v) { Vagrant.new }
+
+  it 'should be destroyed' do
+    status = v.destroy('namenode1')
+    expect(status.success?).to eq true
+  end
+
+end
+
+context 'when namenode1 is gone' do
+
+  describe server(:datanode2) do
+
+    it 'should create a file /hosts' do
+      result = current_server.ssh_exec('sudo -u hdfs hdfs dfs -put /etc/hosts /hosts && echo OK')
+      expect(result.chomp).to match /OK/
+    end
+
+    it 'should rm /hosts' do
+      result = current_server.ssh_exec('sudo -u hdfs hdfs dfs -rm /hosts && echo OK')
+      expect(result.chomp).to match /OK/
+    end
+
+  end
+
+end
+
+describe server(:namenode1) do
+
+  let(:v) { Vagrant.new }
+  it 'should be up' do
+    status = v.up('namenode1')
+    expect(status.success?).to eq true
+  end
+
+end
+
+context 'when namenode1 is back' do
+
+  describe server(:namenode1) do
+
+    it 'should be ready' do
+      response = nil
+      retry_and_sleep do
+        response = fetch "http://#{ server(:namenode1).server.address }:5070/jmx"
+      end
+      expect(response.class).to eq(Net::HTTPOK)
+    end
+
+    it 'should report it is in standby status' do
+      http_res = fetch "http://#{ server(:namenode1).server.address }:5070/jmx?qry=Hadoop:service=NameNode,name=NameNodeStatus"
+      json = JSON.parse(http_res.body)
+      res = json['beans'].first
+      expect(res['name']).to eq('Hadoop:service=NameNode,name=NameNodeStatus')
+      expect(res['NNRole']).to eq('NameNode')
+      expect(res['State']).to eq('standby')
+    end
+
+  end
+
+end
+
 context 'when the test finishes' do
   describe server(:namenode1) do
     it 'should become master' do
