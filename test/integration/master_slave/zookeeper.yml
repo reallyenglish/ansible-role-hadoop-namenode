@@ -8,9 +8,7 @@
     no_proxy: "{{ no_proxy | default() }}"
 
   pre_tasks:
-    # XXX java.net.InetAddress.getLocalHost throws an exception without this
-    - shell: echo "127.0.0.1 localhost {{ ansible_hostname }} {{ ansible_fqdn }}" > /etc/hosts
-      changed_when: False
   roles:
+    - role: ansible-role-freebsd-repos
     - role: ansible-role-zookeeper
 

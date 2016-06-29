@@ -8,27 +8,7 @@
     no_proxy: "{{ no_proxy | default() }}"
 
   pre_tasks:
-    # XXX java.net.InetAddress.getLocalHost throws an exception without this
-    - shell: echo "127.0.0.1 localhost" > /etc/hosts
-      changed_when: False
-    - shell: echo "{{ ansible_all_ipv4_addresses[1] }} {{ ansible_hostname }} {{ ansible_fqdn }}" >> /etc/hosts
-      changed_when: False
-    - shell: echo "192.168.84.101 namenode1" >> /etc/hosts
-      changed_when: False
-    - shell: echo "192.168.84.102 namenode2" >> /etc/hosts
-      changed_when: False
-    # XXX the latest haddop2, with "status" patches, is not available in the official repo
-    - file:
-        path: /usr/local/etc/pkg/repos
-        state: directory
-        mode: 755
-      changed_when: false
-      when: "{{ ansible_os_family == 'FreeBSD' }}"
-    - shell: "echo 'FreeBSD: { enabled:  no }' > /usr/local/etc/pkg/repos/FreeBSD.conf"
-      changed_when: false
-      when: "{{ ansible_os_family == 'FreeBSD' }}"
-    - shell: "echo 'reallyenglish: { url: \"pkg+http://10.3.build.reallyenglish.com/${ABI}\", mirror_type: \"srv\", signature_type: \"none\", enabled:  yes }' > /usr/local/etc/pkg/repos/reallyenglish.conf"
-      changed_when: false
-      when: "{{ ansible_os_family == 'FreeBSD' }}"
   roles:
+    - role: ansible-role-freebsd-repos
+    - role: ansible-role-hosts
     - role: ansible-role-hadoop-datanode
