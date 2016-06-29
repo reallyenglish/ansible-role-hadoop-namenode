@@ -31,7 +31,7 @@ hadoop_config:
   core_site:
     -
       - name: fs.defaultFS
-      - value: "hdfs://{{ hadoop_namenode_master }}:8020/"
+      - value: "hdfs://{{ hadoop_namenode_dfs_nameservices }}/"
     -
       - name: dfs.journalnode.edits.dir
       - value: "{{ hadoop_journalnode_db_dir }}"
