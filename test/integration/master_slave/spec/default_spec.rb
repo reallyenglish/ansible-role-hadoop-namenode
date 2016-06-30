@@ -245,7 +245,7 @@ context 'when namenode1 is back' do
 
     it 'should be ready' do
       response = nil
-      retry_and_sleep do
+      retry_and_sleep(:tries => 20) do
         response = fetch "http://#{ server(:namenode1).server.address }:5070/jmx"
       end
       expect(response.class).to eq(Net::HTTPOK)
