@@ -117,7 +117,10 @@ class Vagrant
 
   def execute(command, opt, server)
     begin
-      @out, @err, @status = Open3.capture3("vagrant #{Shellwords.escape(command)} #{Shellwords.escape(opt)} #{Shellwords.escape(server)}")
+      command = "vagrant #{Shellwords.escape(command)}" + ' '
+      command += "#{Shellwords.escape(opt)}" + ' ' if not opt.empty?
+      command += "#{Shellwords.escape(server)}"
+      @out, @err, @status = Open3.capture3(command)
     rescue SystemCallError => e
       @status = e
     end
