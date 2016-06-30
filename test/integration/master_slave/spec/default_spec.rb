@@ -240,6 +240,7 @@ describe server(:namenode1) do
   it 'should be up' do
     status = v.up('namenode1')
     expect(status.success?).to eq true
+    puts status.out if not status.success?
   end
 
 end
