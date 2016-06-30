@@ -202,7 +202,7 @@ end
 
 describe server(:namenode1) do
 
-  before { skip 'because bundler cannot find vagrant bin see issue 4602 at https://github.com/bundler/bundler/issues/4602' if env['JENKINS_HOME'] }
+  before { skip 'because bundler cannot find vagrant bin see issue 4602 at https://github.com/bundler/bundler/issues/4602' if ENV['JENKINS_HOME'] }
   let(:v) { Vagrant.new }
 
   it 'should be destroyed' do
@@ -216,7 +216,7 @@ context 'when namenode1 is gone' do
 
   describe server(:datanode2) do
 
-    before { skip 'because of issue 4602' if env['JENKINS_HOME'] }
+    before { skip 'because of issue 4602' if ENV['JENKINS_HOME'] }
 
     it 'should create a file /hosts' do
       result = current_server.ssh_exec('sudo -u hdfs hdfs dfs -put /etc/hosts /hosts && echo OK')
@@ -234,7 +234,7 @@ end
 
 describe server(:namenode1) do
 
-  before { skip 'because of issue 4602' if env['JENKINS_HOME'] }
+  before { skip 'because of issue 4602' if ENV['JENKINS_HOME'] }
 
   let(:v) { Vagrant.new }
   it 'should be up' do
