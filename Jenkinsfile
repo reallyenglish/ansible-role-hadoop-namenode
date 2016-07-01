@@ -23,7 +23,11 @@ node ('virtualbox') {
 
     stage 'integration'
     dir("$directory") {
-      sh 'rake'
+        try {
+            sh 'rake'
+        } finally {
+            sh 'rake clean'
+        }
     }
 
   stage 'Notify'

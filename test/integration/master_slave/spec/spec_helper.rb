@@ -68,7 +68,7 @@ end
 
 def retry_and_sleep(options = {}, &block)
   opts = {
-    :tries => 10,
+    :tries => 60,
     :sec => 10,
     :on => [ Exception ],
     :verbose => false
@@ -82,11 +82,79 @@ def retry_and_sleep(options = {}, &block)
     warn e.message if verbose
     if (tries -= 1) > 0
       warn "retrying (remaining: %d)" % [ tries ]
-      warn "sleeping %d sec" % [ sec * i ] if verbose
-      sleep sec * i
+      warn "sleeping %d sec" % [ sec ] if verbose
+      sleep sec
       i += 1
       retry
     end
+  end
+end
+
+require 'shellwords'
+class Vagrant
+
+  def initialize
+    @status # Process::Status
+    @out
+    @err
+  end
+
+  def up(server)
+    execute('up', '', server)
+  end
+
+  def boot(server)
+    execute('up', '--no-provision', server)
+  end
+
+  def provision(server)
+    execute('provision', '', server)
+  end
+
+  def destroy(server)
+    execute('destroy', '--force', server)
+  end
+
+  def execute(command, opt, server)
+    begin
+      command = "vagrant #{Shellwords.escape(command)}" + ' '
+      command += "#{Shellwords.escape(opt)}" + ' ' if not opt.empty?
+      command += "#{Shellwords.escape(server)}"
+      @out, @err, @status = Open3.capture3(command)
+    rescue SystemCallError => e
+      @status = e
+    end
+    status
+  end
+
+  def status
+    @status
+  end
+
+  def stdout
+    @out
+  end
+
+  def stdout_lines
+    @out.split("\n").to_a
+  end
+
+  def stderr
+    @err
+  end
+
+  def stderr_lines
+    @err.split("\n").to_a
+  end
+
+  def status
+    @status
+  end
+
+  def success?
+    return  false if @success.nil?
+    return false if @status.is_a?(Exception)
+    @status.success?
   end
 end
 

@@ -25,3 +25,22 @@ task :test do
     end
   end
 end
+
+task :clean do
+  integration_test_dirs.each do |d|
+    rakefile = d + 'Rakefile'
+    if rakefile.exist? and rakefile.file?
+      Dir.chdir(d) do
+        puts "entering to %s" % [ d ]
+        begin
+          puts 'running rake clean'
+          sh 'rake clean'
+        rescue Exception => e
+          puts 'rake clean clean failed:'
+          puts e.message
+          puts e.backtrace.inspect
+        end
+      end
+    end
+  end
+end
