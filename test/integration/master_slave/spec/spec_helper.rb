@@ -68,7 +68,7 @@ end
 
 def retry_and_sleep(options = {}, &block)
   opts = {
-    :tries => 10,
+    :tries => 60,
     :sec => 10,
     :on => [ Exception ],
     :verbose => false
@@ -82,8 +82,8 @@ def retry_and_sleep(options = {}, &block)
     warn e.message if verbose
     if (tries -= 1) > 0
       warn "retrying (remaining: %d)" % [ tries ]
-      warn "sleeping %d sec" % [ sec * i ] if verbose
-      sleep sec * i
+      warn "sleeping %d sec" % [ sec ] if verbose
+      sleep sec
       i += 1
       retry
     end
