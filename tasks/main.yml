@@ -54,16 +54,25 @@
 - include: configure-xml.yml
 
 - include: ha-namenode.yml
-  when: "{{ hadoop_namenode_enable_ha }}"
+  when:
+    - hadoop_namenode_enable_ha
 
 - include: standalone-namenode.yml
-  when: "{{ not hadoop_namenode_enable_ha }}"
+  when:
+    - not hadoop_namenode_enable_ha
 
 - name: Start hadoop namenode
   service:
     name: "{{ hadoop_namenode_service }}"
-    enabled: true
     state: started
 
+- name: Wait for namenode to listen on IP address hadoop_namenode_host and port hadoop_namenode_port (tasks/main.yml)
+  # XXX in case of Java application, you cannot be sure if it has started
+  # successfully
+  wait_for:
+    host: "{{ hadoop_namenode_host }}"
+    port: "{{ hadoop_namenode_port }}"
+
 - include: ha-zkfc.yml
-  when: "{{ hadoop_namenode_enable_ha }}"
+  when:
+    - hadoop_namenode_enable_ha

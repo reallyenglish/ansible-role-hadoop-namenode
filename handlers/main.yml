@@ -5,6 +5,15 @@
     name: "{{ hadoop_namenode_service }}"
     state: restarted
     enabled: yes
+  notify:
+    - Wait for namenode to listen on IP address hadoop_namenode_host and port hadoop_namenode_port (handlers/main.yml)
+
+- name: Wait for namenode to listen on IP address hadoop_namenode_host and port hadoop_namenode_port (handlers/main.yml)
+  # XXX in case of Java application, you cannot be sure if it has started
+  # successfully
+  wait_for:
+    host: "{{ hadoop_namenode_host }}"
+    port: "{{ hadoop_namenode_port }}"
 
 - name: Restart resourcemanager
   service:

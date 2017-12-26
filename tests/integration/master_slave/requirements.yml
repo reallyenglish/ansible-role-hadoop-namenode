@@ -1,0 +1,11 @@
+---
+
+- name: reallyenglish.hosts
+- name: reallyenglish.hadoop-datanode
+  scm: git
+  src: https://github.com/reallyenglish/ansible-role-hadoop-datanode
+- name: reallyenglish.hadoop-journalnode
+  scm: git
+  src: https://github.com/reallyenglish/ansible-role-hadoop-journalnode
+- name: reallyenglish.zookeeper
+- name: reallyenglish.freebsd-repos

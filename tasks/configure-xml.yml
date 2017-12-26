@@ -1,47 +1,24 @@
 ---
 
-- name: "Configure {{ hadoop_core_site_file }}"
+- name: "Configure {{ item.file }}"
   template:
-    src: core-site.xml.j2
-    dest: "{{ hadoop_core_site_file }}"
+    src: "{{ item.name }}-site.xml.j2"
+    dest: "{{ item.file }}"
     validate: "xmllint %s"
-  when: hadoop_core_site_file
-  register: core_site
+  when:
+    - item.file is defined
+    - item.file | length > 0
+  register: hadoop_site
   notify:
     - Restart namenode
-
-- name: "Configure {{ hadoop_hdfs_site_file }}"
-  template:
-    src: hdfs-site.xml.j2
-    dest: "{{ hadoop_hdfs_site_file }}"
-    validate: "xmllint %s"
-  when: hadoop_hdfs_site_file
-  register: hdfs_site
-  notify:
-    - Restart namenode
-
-- name: "Configure {{ hadoop_mapred_site_file }}"
-  template:
-    src: mapred-site.xml.j2
-    dest: "{{ hadoop_mapred_site_file }}"
-    validate: "xmllint %s"
-  when: hadoop_mapred_site_file
-  register: mapred_site
-  notify:
-    - Restart namenode
-
-- name: "Configure {{ hadoop_yarn_site_file }}"
-  template:
-    src: yarn-site.xml.j2
-    dest: "{{ hadoop_yarn_site_file }}"
-    validate: "xmllint %s"
-  when: hadoop_yarn_site_file
-  register: yarn_site
-  notify:
-    - Restart namenode
+  with_items:
+    - { name: 'core', file: "{{ hadoop_core_site_file }}" }
+    - { name: 'hdfs', file: "{{ hadoop_hdfs_site_file }}" }
+    - { name: 'mapred', file: "{{ hadoop_mapred_site_file }}" }
+    - { name: 'yarn', file: "{{ hadoop_yarn_site_file }}" }
 
 # XXX restart hadoop services when hadoop_config_changed is true
 # you cannot "notify" here because zkfc is not enabled when standalone
 - set_fact:
     hadoop_config_changed: true
-  when: "{{ core_site.changed or hdfs_site.changed or mapred_site.changed or yarn_site.changed or (hadoop_config_changed is defined and hadoop_config_changed) }}"
+  when: hadoop_site.changed or (hadoop_config_changed is defined and hadoop_config_changed)

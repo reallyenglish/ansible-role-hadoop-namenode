@@ -1,0 +1,14 @@
+---
+- hosts: journalnode
+  become: yes
+  become_method: sudo
+  environment:
+    http_proxy: "{{ http_proxy | default() }}"
+    https_proxy: "{{ https_proxy | default() }}"
+    no_proxy: "{{ no_proxy | default() }}"
+
+  pre_tasks:
+  roles:
+    - name: reallyenglish.freebsd-repos
+    - name: reallyenglish.hosts
+    - name: reallyenglish.hadoop-journalnode

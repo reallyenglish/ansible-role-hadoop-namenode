@@ -1,0 +1,123 @@
+freebsd_repos:
+  FreeBSD:
+    enabled: "true"
+    state: present
+    FETCH_TIMEOUT: 200
+hadoop_namenode_host: "{{ ansible_em1.ipv4[0].address }}"
+hadoop_namenode_enable_ha: true
+
+hadoop_namenode_master: namenode1
+hadoop_namenode_slave: namenode2
+
+hadoop_journalnode_nodes:
+  - journalnode1:8485
+  - journalnode2:8485
+  - journalnode3:8485
+
+hadoop_namenode_zookeeper_nodes:
+  - journalnode1:2181
+  - journalnode2:2181
+  - journalnode3:2181
+
+hadoop_namenode_dfs_nameservices: mycluster
+
+hadoop_namenode_dfs_hosts_file: "{{ hadoop_conf_dir }}/dfs_hosts"
+hadoop_namenode_dfs_hosts:
+  - 192.168.84.121
+  - 192.168.84.122
+  - 192.168.84.123
+
+hadoop_namenode_db_dir: /var/db/namenode
+hadoop_namenode_dfs_namenode_name_dir: "{{ hadoop_namenode_db_dir }}/dfs/name"
+hadoop_journalnode_db_dir: /var/db/journalnode
+hadoop_datanode_db_dir: /var/db/datanode
+
+hadoop_config:
+  slaves: []
+  core_site:
+    -
+      - name: fs.defaultFS
+      - value: "hdfs://{{ hadoop_namenode_dfs_nameservices }}/"
+    -
+      - name: dfs.journalnode.edits.dir
+      - value: "{{ hadoop_journalnode_db_dir }}"
+  hdfs_site:
+    -
+      - name: dfs.nameservices
+      - value: "{{ hadoop_namenode_dfs_nameservices }}"
+    -
+      - name: dfs.hosts
+      - value: "{{ hadoop_namenode_dfs_hosts_file }}"
+    - 
+      - name: "dfs.ha.namenodes.{{ hadoop_namenode_dfs_nameservices }}"
+      - value: "{{ hadoop_namenode_master }},{{ hadoop_namenode_slave }}"
+    -
+      - name: "dfs.namenode.rpc-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_master }}"
+      - value: "{{ hadoop_namenode_master }}:8020"
+    -
+      - name: "dfs.namenode.rpc-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_slave }}"
+      - value: "{{ hadoop_namenode_slave }}:8020"
+    -
+      - name: "dfs.namenode.http-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_master }}"
+      - value: "{{ hadoop_namenode_master }}:5070"
+    -
+      - name: "dfs.namenode.http-address.{{ hadoop_namenode_dfs_nameservices }}.{{ hadoop_namenode_slave }}"
+      - value: "{{ hadoop_namenode_slave }}:5070"
+    -
+      - name: dfs.namenode.shared.edits.dir
+      - value: "qjournal://{{ hadoop_journalnode_nodes | join(';') }}/{{ hadoop_namenode_dfs_nameservices }}"
+    -
+      - name: dfs.namenode.name.dir
+      - value: "file://{{ hadoop_namenode_dfs_namenode_name_dir }}"
+    -
+      - name: "dfs.client.failover.proxy.provider.{{ hadoop_namenode_dfs_nameservices }}"
+      - value: org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider
+    -
+      # when shared state storage is QJM, no fencing is required because QJM
+      # inherently enforces single-writer semantics at the storage level
+      - name: dfs.ha.fencing.methods
+      - value: shell(/usr/bin/true)
+    -
+      - name: dfs.ha.automatic-failover.enabled
+      - value: true
+    -
+      - name: ha.zookeeper.quorum
+      - value: "{{ hadoop_namenode_zookeeper_nodes | join(',') }}"
+    -
+      - name: dfs.datanode.data.dir
+      - value: "file://{{ hadoop_datanode_db_dir }}"
+    -
+      # disable reverse DNS lookup
+      - name: dfs.namenode.datanode.registration.ip-hostname-check
+      - value: false
+    -
+      - name: dfs.replication
+      - value: 3
+  yarn_site: []
+  mapred_site: []
+
+hosts_map:
+  "192.168.84.201":
+    - journalnode1
+    - journalnode1.virtualbox.reallyenglish.com
+  "192.168.84.202":
+    - journalnode2
+    - journalnode2.virtualbox.reallyenglish.com
+  "192.168.84.203":
+    - journalnode3
+    - journalnode3.virtualbox.reallyenglish.com
+  "192.168.84.101":
+    - namenode1
+    - namenode1.virtualbox.reallyenglish.com
+  "192.168.84.102":
+    - namenode2
+    - namenode2.virtualbox.reallyenglish.com
+  "192.168.84.121":
+    - datanode1
+    - datanode1.virtualbox.reallyenglish.com
+  "192.168.84.122":
+    - datanode2
+    - datanode2.virtualbox.reallyenglish.com
+  "192.168.84.123":
+    - datanode3
+    - datanode3.virtualbox.reallyenglish.com

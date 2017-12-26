@@ -4,8 +4,14 @@
   pkgng:
     name: hadoop2
     state: present
+  # XXX workaround `Operation timed out`, and other random failures during
+  # Jenkins build. as the build takes more than 2 hours, a single glitch wastes
+  # a lot of time when all you need is updating a single line in README
+  register: register_install_hadoop
+  until: register_install_hadoop | succeeded
+  retries: 3
 
-- name: install py27-lxml
+- name: Install py27-lxml
   pkgng:
     name: py27-lxml
     state: present
@@ -15,3 +21,16 @@
   pkgng:
     name: zookeeper
     state: present
+
+- name: Patch /usr/local/etc/rc.d/namenode
+  # XXX service namenode status has been broken
+  lineinfile:
+    dest: /usr/local/etc/rc.d/namenode
+    regexp: '^pidfile="/var/run/hadoop/hadoop-hdfs-namenode\.pid"'
+    line: 'pidfile="/var/run/hadoop/hadoop-hdfs-namenode.pid"'
+    insertafter: "^status_precmd=find_pid"
+
+- name: Enable hadoop namenode
+  service:
+    name: "{{ hadoop_namenode_service }}"
+    enabled: true

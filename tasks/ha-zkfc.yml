@@ -1,10 +1,12 @@
 ---
 
-- command: "zkCli.sh -server {{ hadoop_namenode_zookeeper_nodes | random }} -cmd 'ls /hadoop-ha'"
+- name: Get result of `ls /hadoop-ha`
+  command: "zkCli.sh -server {{ hadoop_namenode_zookeeper_nodes | random }} -cmd 'ls /hadoop-ha'"
   register: zkcli_result
   changed_when: false
 
-- command: hdfs zkfc -formatZK -nonInteractive
+- name: Do format zkfc
+  command: hdfs zkfc -formatZK -nonInteractive
   become: yes
   become_user: "{{ hadoop_namenode_user }}"
   become_method: sudo

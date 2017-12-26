@@ -5,6 +5,8 @@ hadoop_namenode_db_dir: "{{ __hadoop_namenode_db_dir }}"
 hadoop_namenode_service: "{{ __hadoop_namenode_service }}"
 hadoop_namenode_resourcemanager_service: "{{ __hadoop_namenode_resourcemanager_service }}"
 hadoop_namenode_flags: ""
+hadoop_namenode_host: localhost
+hadoop_namenode_port: 8020
 
 hadoop_namenode_dfs_namenode_name_dir: "{{ hadoop_namenode_db_dir }}/dfs/name"
 

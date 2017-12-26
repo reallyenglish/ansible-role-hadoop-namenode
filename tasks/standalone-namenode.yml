@@ -1,8 +1,22 @@
 ---
 
-- command: "hadoop namenode -format"
+- name: Initialize hadoop_namenode_dfs_namenode_name_dir
+  command: "hdfs namenode -format"
   args:
     creates: "{{ hadoop_namenode_dfs_namenode_name_dir }}/current/VERSION"
+  register: register_hdfs_namenode_format
   become: yes
   become_user: "{{ hadoop_namenode_user }}"
   become_method: sudo
+
+- name: Wait for hadoop_namenode_service to terminate
+  # XXX this is needed to ensure the `service` task correctly starts the
+  # service. the `format` command above starts and stops the service. without
+  # this, there is a race condition, where the service is stopping, but still
+  # running, and the `start the service` task later incorrectly assumes the
+  # service is running and no need to start it.
+  service:
+    name: "{{ hadoop_namenode_service }}"
+    state: stopped
+  when:
+    - register_hdfs_namenode_format.changed
